@@ -5,7 +5,7 @@ import os
 import tempfile
 
 # Streamlit App Title
-st.title("Screaming Frog CSV Analyzer")
+st.title("Zen Website Analyzer")
 
 # File Uploader for CSV Export from Screaming Frog
 uploaded_file = st.file_uploader("Upload Screaming Frog Exported CSV (Internal URLs)", type=["csv"])
@@ -18,8 +18,22 @@ if uploaded_file:
     # Load CSV Data
     df = pd.read_csv(csv_path)
 
-    st.subheader("Internal Pages Overview")
-    st.dataframe(df.head(20))
+    # Sidebar Filters
+    st.sidebar.header("Filters")
+    status_filter = st.sidebar.multiselect("Filter by Status Code", df["Status Code"].unique()) if "Status Code" in df.columns else []
+    min_word_count, max_word_count = st.sidebar.slider("Filter by Word Count Range", int(df["Word Count"].min()), int(df["Word Count"].max()), (int(df["Word Count"].min()), int(df["Word Count"].max()))) if "Word Count" in df.columns else (0, 0)
+    max_crawl_depth = st.sidebar.slider("Filter by Maximum Crawl Depth", int(df["Crawl Depth"].min()), int(df["Crawl Depth"].max()), int(df["Crawl Depth"].max())) if "Crawl Depth" in df.columns else 0
+    
+    # Apply Filters
+    if status_filter:
+        df = df[df["Status Code"].isin(status_filter)]
+    if "Word Count" in df.columns:
+        df = df[(df["Word Count"] >= min_word_count) & (df["Word Count"] <= max_word_count)]
+    if "Crawl Depth" in df.columns:
+        df = df[df["Crawl Depth"] <= max_crawl_depth]
+    
+    st.subheader("Filtered Internal Pages Overview")
+    st.dataframe(df)
 
     # Status Code Distribution
     if "Status Code" in df.columns:
