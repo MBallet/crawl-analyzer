@@ -5,7 +5,7 @@ import os
 import tempfile
 
 # Streamlit App Title
-st.title("Zen Website Analyzer")
+st.title("Matt's Frog Silencer")
 
 # File Uploader for CSV Export from Screaming Frog
 uploaded_file = st.file_uploader("Upload Screaming Frog Exported CSV (Internal URLs)", type=["csv"])
