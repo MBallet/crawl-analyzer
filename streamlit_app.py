@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 import os
 import tempfile
 
-# Streamlit App Title
-st.title("Matt's Frog Silencer")
+# Streamlit App Title with Image
+st.image("https://via.placeholder.com/800x200", use_column_width=True)  # Replace with actual image URL or local path
+st.title("Screaming Frog CSV Analyzer")
 
 # File Uploader for CSV Export from Screaming Frog
 uploaded_file = st.file_uploader("Upload Screaming Frog Exported CSV (Internal URLs)", type=["csv"])
@@ -31,6 +32,9 @@ if uploaded_file:
         df = df[(df["Word Count"] >= min_word_count) & (df["Word Count"] <= max_word_count)]
     if "Crawl Depth" in df.columns:
         df = df[df["Crawl Depth"] <= max_crawl_depth]
+    
+    # Display Image Above Results
+    st.image("https://via.placeholder.com/800x100", use_column_width=True)  # Replace with actual image URL or local path
     
     st.subheader("Filtered Internal Pages Overview")
     st.dataframe(df)
