@@ -20,8 +20,7 @@ def download_file(url, save_path):
     response = session.get(url, stream=True)
     
     # Handle Google Drive specific cases
-    if "Content-Disposition" not in response.headers:
-        # Google Drive sometimes serves a warning page instead of the file
+    if "text/html" in response.headers.get("Content-Type", ""):  # If it's an HTML page, it's likely not a direct file
         params = {"id": url.split("id=")[-1], "confirm": "t"}
         response = session.get("https://drive.google.com/uc?export=download", params=params, stream=True)
     
@@ -53,12 +52,12 @@ if uploaded_file or file_url:
 
                 # Verify that the file is actually a ZIP
                 if not zipfile.is_zipfile(seospider_path):
-                    st.error("The downloaded file is not a valid Screaming Frog .seospider file.")
+                    st.error("The downloaded file is not a valid Screaming Frog .seospider file. It may require public access permissions.")
                     seospider_path = None
                 else:
                     st.success("Valid .seospider file detected. Proceeding with extraction.")
             else:
-                st.error("Failed to download the file. Check the URL.")
+                st.error("Failed to download the file. Check the URL and ensure it is publicly accessible.")
                 seospider_path = None
     else:
         # Save uploaded file temporarily
