@@ -5,6 +5,11 @@ import matplotlib.pyplot as plt
 import zipfile
 import os
 
+# Increase the max upload size to 1GB (adjust as needed)
+os.makedirs(os.path.expanduser("~/.streamlit"), exist_ok=True)
+with open(os.path.expanduser("~/.streamlit/config.toml"), "w") as f:
+    f.write("[server]\nmaxUploadSize = 1000\n")
+
 # Streamlit App Title
 st.title("Screaming Frog Crawl Analyzer")
 
