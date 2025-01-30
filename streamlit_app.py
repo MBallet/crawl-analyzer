@@ -8,16 +8,32 @@ import requests
 import tempfile
 import re
 
-# Streamlit App Title
-st.title("Screaming Frog Crawl Analyzer")
-
-# Function to convert Google Drive URL to direct download link
 def get_direct_google_drive_link(url):
     match = re.search(r"https://drive\.google\.com/file/d/([^/]+)/", url)
     if match:
         file_id = match.group(1)
         return f"https://drive.google.com/uc?export=download&id={file_id}"
     return url
+
+def download_file(url, save_path):
+    session = requests.Session()
+    response = session.get(url, stream=True)
+    
+    # Handle Google Drive specific cases
+    if "Content-Disposition" not in response.headers:
+        # Google Drive sometimes serves a warning page instead of the file
+        params = {"id": url.split("id=")[-1], "confirm": "t"}
+        response = session.get("https://drive.google.com/uc?export=download", params=params, stream=True)
+    
+    if response.status_code == 200:
+        with open(save_path, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        return True
+    return False
+
+# Streamlit App Title
+st.title("Screaming Frog Crawl Analyzer")
 
 # File Uploader
 uploaded_file = st.file_uploader("Upload Screaming Frog Crawl Data (.seospider)", type=["seospider"])
@@ -29,12 +45,10 @@ if uploaded_file or file_url:
     if file_url:
         with st.spinner("Downloading file..."):
             direct_url = get_direct_google_drive_link(file_url)
-            response = requests.get(direct_url, stream=True)
-            if response.status_code == 200:
-                seospider_path = "downloaded_crawl.seospider"
-                with open(seospider_path, "wb") as f:
-                    for chunk in response.iter_content(chunk_size=8192):
-                        f.write(chunk)
+            seospider_path = "downloaded_crawl.seospider"
+            success = download_file(direct_url, seospider_path)
+
+            if success:
                 st.success("File downloaded successfully!")
 
                 # Verify that the file is actually a ZIP
