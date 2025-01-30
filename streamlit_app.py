@@ -6,9 +6,18 @@ import zipfile
 import os
 import requests
 import tempfile
+import re
 
 # Streamlit App Title
 st.title("Screaming Frog Crawl Analyzer")
+
+# Function to convert Google Drive URL to direct download link
+def get_direct_google_drive_link(url):
+    match = re.search(r"https://drive\.google\.com/file/d/([^/]+)/", url)
+    if match:
+        file_id = match.group(1)
+        return f"https://drive.google.com/uc?export=download&id={file_id}"
+    return url
 
 # File Uploader
 uploaded_file = st.file_uploader("Upload Screaming Frog Crawl Data (.seospider)", type=["seospider"])
@@ -19,12 +28,21 @@ file_url = st.text_input("Or enter a public file URL (Google Drive, S3, Dropbox)
 if uploaded_file or file_url:
     if file_url:
         with st.spinner("Downloading file..."):
-            response = requests.get(file_url)
+            direct_url = get_direct_google_drive_link(file_url)
+            response = requests.get(direct_url, stream=True)
             if response.status_code == 200:
                 seospider_path = "downloaded_crawl.seospider"
                 with open(seospider_path, "wb") as f:
-                    f.write(response.content)
+                    for chunk in response.iter_content(chunk_size=8192):
+                        f.write(chunk)
                 st.success("File downloaded successfully!")
+
+                # Verify that the file is actually a ZIP
+                if not zipfile.is_zipfile(seospider_path):
+                    st.error("The downloaded file is not a valid Screaming Frog .seospider file.")
+                    seospider_path = None
+                else:
+                    st.success("Valid .seospider file detected. Proceeding with extraction.")
             else:
                 st.error("Failed to download the file. Check the URL.")
                 seospider_path = None
