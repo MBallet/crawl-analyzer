@@ -6,7 +6,7 @@ import tempfile
 
 # Streamlit App Title with Image
 st.image("https://drive.google.com/uc?export=view&id=1KVaUWAdY4O_dPUCVHzt3rllHFtNkS0Tt", use_container_width=True)  # Replace with actual image URL or local path
-st.title("Screaming Frog CSV Analyzer")
+st.title("The SEO Ghost")
 
 # File Uploader for CSV Export from Screaming Frog
 uploaded_file = st.file_uploader("Upload Screaming Frog Exported CSV (Internal URLs)", type=["csv"])
