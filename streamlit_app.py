@@ -35,6 +35,15 @@ if uploaded_file:
     
     st.subheader("Internal Pages Overview")
     st.dataframe(df)
+    
+    # Display Metrics
+    total_pages = len(df)
+    missing_title = df["Title 1"].isna().sum() if "Title 1" in df.columns else 0
+    missing_description = df["Meta Description 1"].isna().sum() if "Meta Description 1" in df.columns else 0
+    
+    st.write(f"**Total Pages:** {total_pages}")
+    st.write(f"**Pages Missing Title:** {missing_title}")
+    st.write(f"**Pages Missing Description:** {missing_description}")
 
     # Status Code Distribution
     if "Status Code" in df.columns:
