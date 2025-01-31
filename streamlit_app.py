@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.express as px
 import os
 import tempfile
 
@@ -48,34 +48,24 @@ if uploaded_file:
     # Status Code Distribution
     if "Status Code" in df.columns:
         st.subheader("Status Code Distribution")
-        status_counts = df["Status Code"].value_counts()
-        fig, ax = plt.subplots()
-        ax.bar(status_counts.index.astype(str), status_counts.values)
-        ax.set_xlabel("Status Code")
-        ax.set_ylabel("Count")
-        ax.set_title("Status Code Distribution")
-        st.pyplot(fig)
+        status_counts = df["Status Code"].value_counts().reset_index()
+        status_counts.columns = ["Status Code", "Count"]
+        fig = px.bar(status_counts, x="Status Code", y="Count", title="Status Code Distribution")
+        st.plotly_chart(fig)
     
     # Word Count Distribution
     if "Word Count" in df.columns:
         st.subheader("Word Count Distribution")
-        fig, ax = plt.subplots()
-        ax.hist(df['Word Count'].dropna(), bins=20, edgecolor='black')
-        ax.set_xlabel("Word Count")
-        ax.set_ylabel("Frequency")
-        ax.set_title("Word Count Distribution")
-        st.pyplot(fig)
+        fig = px.histogram(df, x="Word Count", nbins=20, title="Word Count Distribution")
+        st.plotly_chart(fig)
     
     # Internal Linking Depth
     if "Crawl Depth" in df.columns:
         st.subheader("Crawl Depth Analysis")
-        depth_counts = df['Crawl Depth'].value_counts().sort_index()
-        fig, ax = plt.subplots()
-        ax.bar(depth_counts.index.astype(str), depth_counts.values)
-        ax.set_xlabel("Crawl Depth")
-        ax.set_ylabel("Count of URLs")
-        ax.set_title("Crawl Depth Distribution")
-        st.pyplot(fig)
+        depth_counts = df["Crawl Depth"].value_counts().reset_index()
+        depth_counts.columns = ["Crawl Depth", "Count"]
+        fig = px.bar(depth_counts, x="Crawl Depth", y="Count", title="Crawl Depth Distribution")
+        st.plotly_chart(fig)
     
     st.success("CSV Data Processed Successfully!")
 else:
