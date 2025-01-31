@@ -24,6 +24,7 @@ if uploaded_file:
     status_filter = st.sidebar.multiselect("Filter by Status Code", df["Status Code"].unique()) if "Status Code" in df.columns else []
     min_word_count, max_word_count = st.sidebar.slider("Filter by Word Count Range", int(df["Word Count"].min()), int(df["Word Count"].max()), (int(df["Word Count"].min()), int(df["Word Count"].max()))) if "Word Count" in df.columns else (0, 0)
     max_crawl_depth = st.sidebar.slider("Filter by Maximum Crawl Depth", int(df["Crawl Depth"].min()), int(df["Crawl Depth"].max()), int(df["Crawl Depth"].max())) if "Crawl Depth" in df.columns else 0
+    min_unique_inlinks, max_unique_inlinks = st.sidebar.slider("Filter by Unique Inlinks Range", int(df["Unique Inlinks"].min()), int(df["Unique Inlinks"].max()), (int(df["Unique Inlinks"].min()), int(df["Unique Inlinks"].max()))) if "Unique Inlinks" in df.columns else (0, 0)
     
     # Apply Filters
     if status_filter:
@@ -32,6 +33,8 @@ if uploaded_file:
         df = df[(df["Word Count"] >= min_word_count) & (df["Word Count"] <= max_word_count)]
     if "Crawl Depth" in df.columns:
         df = df[df["Crawl Depth"] <= max_crawl_depth]
+    if "Unique Inlinks" in df.columns:
+        df = df[(df["Unique Inlinks"] >= min_unique_inlinks) & (df["Unique Inlinks"] <= max_unique_inlinks)]
     
     st.subheader("Internal Pages Overview")
     st.dataframe(df)
@@ -65,6 +68,14 @@ if uploaded_file:
         depth_counts = df["Crawl Depth"].value_counts().reset_index()
         depth_counts.columns = ["Crawl Depth", "Count"]
         fig = px.bar(depth_counts, x="Crawl Depth", y="Count", title="Crawl Depth Distribution")
+        st.plotly_chart(fig)
+    
+    # Unique Inlinks Distribution
+    if "Unique Inlinks" in df.columns:
+        st.subheader("Unique Inlinks Analysis")
+        inlinks_counts = df["Unique Inlinks"].value_counts().reset_index()
+        inlinks_counts.columns = ["Unique Inlinks", "Count"]
+        fig = px.bar(inlinks_counts, x="Unique Inlinks", y="Count", title="Unique Inlinks Distribution")
         st.plotly_chart(fig)
     
     st.success("CSV Data Processed Successfully!")
