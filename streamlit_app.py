@@ -6,8 +6,7 @@ import tempfile
 
 # Streamlit App Title with Image
 st.title("Screaming Frog CSV Analyzer")
-st.image("Frog - open.png", use_container_width=True)  # Replace with actual image URL  # Replace with actual image URL or local path
-
+st.image("Frog - open.png", width=400) 
 
 # File Uploader for CSV Export from Screaming Frog
 uploaded_file = st.file_uploader("Upload Screaming Frog Exported CSV (Internal URLs)", type=["csv"])
@@ -34,10 +33,7 @@ if uploaded_file:
     if "Crawl Depth" in df.columns:
         df = df[df["Crawl Depth"] <= max_crawl_depth]
     
-    # Display Image Above Results
-    st.image("Frog - disected.png", use_container_width=True)  # Replace with actual image URL  # Replace with actual image URL or local path
-    
-    st.subheader("Filtered Internal Pages Overview")
+    st.subheader("Internal Pages Overview")
     st.dataframe(df)
 
     # Status Code Distribution
