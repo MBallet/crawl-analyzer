@@ -51,34 +51,40 @@ if uploaded_file:
     st.write(f"**Pages Missing Title:** {missing_title}")
     st.write(f"**Pages Missing Description:** {missing_description}")
 
-    # Status Code Distribution
-    if "Status Code" in df.columns:
-        st.subheader("Status Code Distribution")
-        status_counts = df["Status Code"].value_counts().reset_index()
-        status_counts.columns = ["Status Code", "Count"]
-        fig = px.bar(status_counts, x="Status Code", y="Count", title="Status Code Distribution")
+    # Indexability Breakdown
+    if "Indexability" in df.columns:
+        st.subheader("Indexability Breakdown")
+        indexability_counts = df["Indexability"].value_counts().reset_index()
+        indexability_counts.columns = ["Indexability", "Count"]
+        fig = px.pie(indexability_counts, names="Indexability", values="Count", title="Indexability Breakdown")
         st.plotly_chart(fig)
     
-    # Word Count Distribution
-    if "Word Count" in df.columns:
-        st.subheader("Word Count Distribution")
-        fig = px.histogram(df, x="Word Count", nbins=20, title="Word Count Distribution")
+    # Title & Meta Description Length Distributions
+    if "Title 1 Length" in df.columns:
+        st.subheader("Title Length Distribution")
+        fig = px.histogram(df, x="Title 1 Length", nbins=20, title="Title Length Distribution")
+        st.plotly_chart(fig)
+    if "Meta Description 1 Length" in df.columns:
+        st.subheader("Meta Description Length Distribution")
+        fig = px.histogram(df, x="Meta Description 1 Length", nbins=20, title="Meta Description Length Distribution")
         st.plotly_chart(fig)
     
-    # Internal Linking Depth
-    if "Crawl Depth" in df.columns:
-        st.subheader("Crawl Depth Analysis")
-        depth_counts = df["Crawl Depth"].value_counts().reset_index()
-        depth_counts.columns = ["Crawl Depth", "Count"]
-        fig = px.bar(depth_counts, x="Crawl Depth", y="Count", title="Crawl Depth Distribution")
+    # Readability vs. Word Count
+    if "Flesch Reading Ease Score" in df.columns and "Word Count" in df.columns:
+        st.subheader("Readability vs. Word Count")
+        fig = px.scatter(df, x="Word Count", y="Flesch Reading Ease Score", title="Readability vs. Word Count")
         st.plotly_chart(fig)
     
-    # Unique Inlinks Distribution
-    if "Unique Inlinks" in df.columns:
-        st.subheader("Unique Inlinks Analysis")
-        inlinks_counts = df["Unique Inlinks"].value_counts().reset_index()
-        inlinks_counts.columns = ["Unique Inlinks", "Count"]
-        fig = px.bar(inlinks_counts, x="Unique Inlinks", y="Count", title="Unique Inlinks Distribution")
+    # Crawl Depth vs. Link Score
+    if "Crawl Depth" in df.columns and "Link Score" in df.columns:
+        st.subheader("Crawl Depth vs. Link Score")
+        fig = px.scatter(df, x="Crawl Depth", y="Link Score", title="Crawl Depth vs. Link Score")
+        st.plotly_chart(fig)
+    
+    # Duplicate Content Analysis
+    if "No. Near Duplicates" in df.columns:
+        st.subheader("Duplicate Content Analysis")
+        fig = px.histogram(df, x="No. Near Duplicates", nbins=10, title="Duplicate Content Distribution")
         st.plotly_chart(fig)
     
     st.success("CSV Data Processed Successfully!")
