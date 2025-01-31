@@ -22,6 +22,7 @@ if uploaded_file:
     # Sidebar Filters
     st.sidebar.header("Filters")
     status_filter = st.sidebar.multiselect("Filter by Status Code", df["Status Code"].unique()) if "Status Code" in df.columns else []
+    content_type_filter = st.sidebar.multiselect("Filter by Content Type", df["Content Type"].unique()) if "Content Type" in df.columns else []
     min_word_count, max_word_count = st.sidebar.slider("Filter by Word Count Range", int(df["Word Count"].min()), int(df["Word Count"].max()), (int(df["Word Count"].min()), int(df["Word Count"].max()))) if "Word Count" in df.columns else (0, 0)
     max_crawl_depth = st.sidebar.slider("Filter by Maximum Crawl Depth", int(df["Crawl Depth"].min()), int(df["Crawl Depth"].max()), int(df["Crawl Depth"].max())) if "Crawl Depth" in df.columns else 0
     min_unique_inlinks, max_unique_inlinks = st.sidebar.slider("Filter by Unique Inlinks Range", int(df["Unique Inlinks"].min()), int(df["Unique Inlinks"].max()), (int(df["Unique Inlinks"].min()), int(df["Unique Inlinks"].max()))) if "Unique Inlinks" in df.columns else (0, 0)
@@ -29,6 +30,8 @@ if uploaded_file:
     # Apply Filters
     if status_filter:
         df = df[df["Status Code"].isin(status_filter)]
+    if content_type_filter:
+        df = df[df["Content Type"].isin(content_type_filter)]
     if "Word Count" in df.columns:
         df = df[(df["Word Count"] >= min_word_count) & (df["Word Count"] <= max_word_count)]
     if "Crawl Depth" in df.columns:
