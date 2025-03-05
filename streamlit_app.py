@@ -5,6 +5,7 @@ import os
 import tempfile
 
 # Streamlit App Title with Image
+st.set_page_config(page_title="Screaming Frogger", page_icon=":frog:")
 st.title("Screaming Frog CSV Analyzer")
 st.image("Frog - open.png", width=400) 
 
