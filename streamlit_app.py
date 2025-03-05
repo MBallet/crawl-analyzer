@@ -6,8 +6,9 @@ import tempfile
 
 # Streamlit App Title with Image
 st.set_page_config(page_title="Screaming Frogger", page_icon=":frog:")
+st.image("Frog - open.png", width=500) 
 st.title("Screaming Frog CSV Analyzer")
-st.image("Frog - open.png", width=400) 
+
 
 # File Uploader for CSV Export from Screaming Frog
 uploaded_file = st.file_uploader("Upload Screaming Frog Exported CSV (Internal URLs)", type=["csv"])
