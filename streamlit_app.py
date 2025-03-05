@@ -83,12 +83,6 @@ if uploaded_file:
         fig = px.scatter(df, x="Crawl Depth", y="Link Score", title="Crawl Depth vs. Link Score")
         st.plotly_chart(fig)
     
-    # Duplicate Content Analysis
-    if "No. Near Duplicates" in df.columns:
-        st.subheader("Duplicate Content Analysis")
-        fig = px.histogram(df, x="No. Near Duplicates", nbins=10, title="Duplicate Content Distribution")
-        st.plotly_chart(fig)
-    
     st.success("CSV Data Processed Successfully!")
 else:
     st.write("Upload a Screaming Frog export CSV file to begin analysis.")
